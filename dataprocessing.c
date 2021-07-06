@@ -60,12 +60,11 @@ static void DataPush(char *buf, int len)
     }
     memcpy(Current->Data,(void *)buf,Current->DataLength*sizeof(float));
     //Current->Timer = NULL;
-    printf("Endpoint = %d\r\n",Current->Endpoint);
+    printf("Float = %#f\r\n",*(float *)Current->Data);
 }
 
 void StateMachine()
 {
-    //printf("enter statemachine\r\n");
     switch(State)
     {
         case Init:
@@ -78,17 +77,14 @@ void StateMachine()
                 BufferRead(frameflag,1);//readpointer + 1
                 break;
             }
-	        //printf("Frame flag captured\r\n");
             BufferRead(frameflag,sizeof(frameflag) - 1);
             memset(frameflag,0,sizeof(frameflag));//frame flag found
             State = GetLen;
             break;
         case GetLen:
-	        //printf("GetLen state\r\n");
             if(BufferRead(&FrameLen,sizeof(FrameLen)))
                 break;//buffer not ready
             State = FramePick;
-	        //printf("FrameLen = %d\r\n",FrameLen);
             fbuf = (uint8_t *)malloc(FrameLen - sizeof(FrameLen));
             break;//len got
         case FramePick:
@@ -112,7 +108,7 @@ void StateMachine()
             }
             else
             {
-                printf("checksum pass!\r\n");
+               // printf("checksum pass!\r\n");
                 FrameLen = 0;
                 State = DataUpdate;
 		        break;
