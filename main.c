@@ -94,7 +94,8 @@ void *tcp_client(void)
 
 int main(void)
 {
-	Serial_init();	
+	Serial_init();
+	Serial_Set();	
 	BufferInit(Text,sizeof(Text));
 	fcntl(Serial_fd,F_SETFL,0);
 	pthread_mutex_init(&mutex_socket,NULL);
