@@ -7,6 +7,8 @@
 #include <sys/socket.h>
 #include "client.h"
 
+#define GATEWAY_ID "001"
+
 int Socket_Init(void)
 {
     if ((Socket_fd = socket(AF_INET,SOCK_STREAM,0))==-1)
@@ -33,4 +35,13 @@ int Socket_Init(void)
         close(Socket_fd);
         return -1;
     }
+    char p[20];
+    sprintf(p,"Gateway:%s",GATEWAY_ID);
+    pthread_mutex_lock(&mutex_socket);
+    if(write(Socket_fd,p,strlen(p))<=0)
+    {
+	    perror("write");
+	    close(Socket_fd);
+    }
+    pthread_mutex_unlock(&mutex_socket);
 }

@@ -9,9 +9,9 @@ usart.o: usart.c usart.h
 ringbuffer.o: ringbuffer.c ringbuffer.h
 	gcc -c ringbuffer.c -o ringbuffer.o
 dataprocessing.o: dataprocessing.c dataprocessing.h
-	gcc -c dataprocessing.c -o dataprocessing.o
+	gcc -c dataprocessing.c -o dataprocessing.o -lpthread
 client.o: client.c client.h
-	gcc -c client.c -o client.o
+	gcc -c client.c -o client.o -lpthread
 
 clean:
 	rm -rf *.o iot_gate

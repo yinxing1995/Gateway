@@ -79,23 +79,15 @@ void *tcp_client(void)
 				//printf("rret = %d,error = %d\r\n",rret,errno);
 				if(errno == EINTR)
 					printf("do not close socket!\r\n");
-
 				else
 				{
 					close(Socket_fd);
 					Socket_Init();
 					printf("Try to reconnect\r\n");
-					//printf("Socket_fd = %d\r\n",Socket_fd);
 					sleep(1);
 				}
 			}
 		}
-		else
-		{
-			write(Socket_fd,"I am client",strlen("I am client"));
-			sleep(1);
-		}
-	}
 	printf("exit\r\n");
 }
 
@@ -104,6 +96,7 @@ int main(void)
 	Serial_init();	
 	BufferInit(Text,sizeof(Text));
 	fcntl(Serial_fd,F_SETFL,0);
+	pthread_mutex_init(&mutex_socket,NULL);
 	Socket_Init();
 	pthread_t t1, t2, t3;
 	char *msg1 = "task 1", *msg2 = "task 2", *msg3 = "task 3";

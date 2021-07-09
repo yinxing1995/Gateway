@@ -2,16 +2,34 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "dataprocessing.h"
 #include "ringbuffer.h"
+#include "client.h"
+#include "usart.h"
 
 #define FRAMEFLAG "Frame"
+
 
 static int State = Init;
 static char frameflag[sizeof(FRAMEFLAG)];
 static uint16_t FrameLen = 0;
 static ClusterArray *Head = NULL;
 static char *fbuf = NULL;
+
+static void DataUpload(char *buf, uint16_t len)
+{
+	char *p = (char *)malloc(sizeof(len)+strlen(FRAMEFLAG));
+	char *temp = p;
+	memcpy(temp,FRAMEFLAG,strlen(FRAMEFLAG));
+	temp += strlen(FRAMEFLAG);
+	memcpy(temp,(void *)&len,sizeof(len));
+	temp += sizeof(len);
+	memcpy(temp,(void *)buf,len-sizeof(len));
+	pthread_mutex_lock(&mutex_socket);
+	write(Socket_fd,p,strlen(FRAMEFLAG)+len);
+	pthread_mutex_unlock(&mutex_socket);
+}
 
 static void DataPush(char *buf, int len)
 {
@@ -60,7 +78,6 @@ static void DataPush(char *buf, int len)
     }
     memcpy(Current->Data,(void *)buf,Current->DataLength*sizeof(float));
     //Current->Timer = NULL;
-    printf("Float = %#f\r\n",*(float *)Current->Data);
 }
 
 void StateMachine()
@@ -109,13 +126,14 @@ void StateMachine()
             else
             {
                // printf("checksum pass!\r\n");
-                FrameLen = 0;
                 State = DataUpdate;
 		        break;
             }
         case DataUpdate:
             if(*fbuf == REPORT)
 	    {
+		DataUpload(fbuf,FrameLen);
+		FrameLen = 0;
 		fbuf++;
                 DataPush(fbuf,FrameLen);
 		free(--fbuf);
