@@ -19,7 +19,7 @@ static char *fbuf = NULL;
 
 static void DataUpload(char *buf, uint16_t len)
 {
-	char *p = (char *)malloc(sizeof(len)+strlen(FRAMEFLAG));
+	char *p = (char *)malloc(len+sizeof(len)+strlen(FRAMEFLAG));
 	char *temp = p;
 	memcpy(temp,FRAMEFLAG,strlen(FRAMEFLAG));
 	temp += strlen(FRAMEFLAG);
@@ -29,6 +29,7 @@ static void DataUpload(char *buf, uint16_t len)
 	pthread_mutex_lock(&mutex_socket);
 	write(Socket_fd,p,strlen(FRAMEFLAG)+len);
 	pthread_mutex_unlock(&mutex_socket);
+	free(p);
 }
 
 static void DataPush(char *buf, int len)

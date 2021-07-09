@@ -88,6 +88,7 @@ void *tcp_client(void)
 				}
 			}
 		}
+	}
 	printf("exit\r\n");
 }
 
