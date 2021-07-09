@@ -12,7 +12,7 @@
 #include "dataprocessing.h"
 #include "client.h"
 
-void usart_processing(void)
+void *usart_processing(void)
 {
     char p;
     while(1)
@@ -24,7 +24,7 @@ void usart_processing(void)
 	printf("Error\r\n");
 }
 
-void usart_recv(void)//use select() to save resources
+void *usart_recv(void)//use select() to save resources
 {
 	char p;
 	int num = 0;
@@ -41,11 +41,13 @@ void usart_recv(void)//use select() to save resources
 	printf("Error\r\n");
 }
 
-void tcp_client(void)
+void *tcp_client(void)
 {
 	fd_set rfds;
 	struct timeval timeout;
 	int iret = 0,rret = 0;
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 0;	
 	//FD_ZERO(&rfds);
 	//FD_SET(Socket_fd,&rfds);
 	while(1)
@@ -60,15 +62,10 @@ void tcp_client(void)
 		else
 			printf("recv = %s\r\n",Datagram);
 		*/
-
-		timeout.tv_sec = 60;
-		timeout.tv_usec = 0;	
 		FD_ZERO(&rfds);
 		FD_SET(Socket_fd,&rfds);
 		iret = select(Socket_fd+1,&rfds,NULL,NULL,&timeout);
-		if(!iret)
-			printf("waiting\r\n");
-		else
+		if(iret)
 		{
 			//printf("iret = %d\r\n",iret);
 			rret = recv(Socket_fd,Datagram,sizeof(Datagram),0);
@@ -92,6 +89,11 @@ void tcp_client(void)
 					sleep(1);
 				}
 			}
+		}
+		else
+		{
+			write(Socket_fd,"I am client",strlen("I am client"));
+			sleep(1);
 		}
 	}
 	printf("exit\r\n");

@@ -1,7 +1,7 @@
 OBJS = main.o usart.o ringbuffer.o dataprocessing.o client.o
 
-main: $(OBJS)
-	gcc $(OBJS) -o main -lpthread
+iot_gate: $(OBJS)
+	gcc $(OBJS) -o iot_gate -lpthread
 main.o: main.c usart.h ringbuffer.h dataprocessing.h client.h
 	gcc -c main.c -o main.o
 usart.o: usart.c usart.h
@@ -14,4 +14,4 @@ client.o: client.c client.h
 	gcc -c client.c -o client.o
 
 clean:
-	rm -rf *.o main
+	rm -rf *.o iot_gate
