@@ -33,6 +33,8 @@ void Serial_Set(void)
 {
 	struct termios options;
 	tcgetattr(Serial_fd,&options);
+	cfsetispeed(&options,B19200);
+	cfsetospeed(&options,B19200);
 	options.c_lflag &= ~(ICANON | ISIG);
 	options.c_iflag &= ~(ICRNL | IGNCR);
 	tcflush(Serial_fd,TCIFLUSH);

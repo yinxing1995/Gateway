@@ -126,7 +126,7 @@ void StateMachine()
             }
             else
             {
-               // printf("checksum pass!\r\n");
+                printf("checksum pass!\r\n");
                 State = DataUpdate;
 		        break;
             }

@@ -14,12 +14,12 @@
 
 void *usart_processing(void)
 {
-    char p;
-    while(1)
-    {
+	char p;
+	while(1)
+	{
 		if(BufferSeek(&p,1))
-			usleep(1000);
-        StateMachine();
+		usleep(1000);
+		StateMachine();
 	}
 	printf("Error\r\n");
 }
@@ -68,7 +68,7 @@ void *tcp_client(void)
 		if(iret)
 		{
 			//printf("iret = %d\r\n",iret);
-			rret = recv(Socket_fd,Datagram,sizeof(Datagram),0);
+			rret = read(Socket_fd,Datagram,sizeof(Datagram));
 			if(rret > 0)
 			{
 				printf("recv = %s\r\n",Datagram);
