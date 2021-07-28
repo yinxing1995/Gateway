@@ -82,6 +82,9 @@ void *tcp_client(void)
 				else
 				{
 					close(Socket_fd);
+					pthread_mutex_lock(&mutex_socket);
+					Connectflag = Disconnected;
+					pthread_mutex_unlock(&mutex_socket);
 					Socket_Init();
 					printf("Try to reconnect\r\n");
 					sleep(1);

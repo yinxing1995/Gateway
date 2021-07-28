@@ -27,7 +27,8 @@ static void DataUpload(char *buf, uint16_t len)
 	temp += sizeof(len);
 	memcpy(temp,(void *)buf,len-sizeof(len));
 	pthread_mutex_lock(&mutex_socket);
-	write(Socket_fd,p,strlen(FRAMEFLAG)+len);
+	if(Connectflag == Connected)
+		write(Socket_fd,p,strlen(FRAMEFLAG)+len);
 	pthread_mutex_unlock(&mutex_socket);
 	free(p);
 }

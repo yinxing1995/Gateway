@@ -9,6 +9,8 @@
 
 #define GATEWAY_ID "001"
 
+int Connectflag = Disconnected;
+
 int Socket_Init(void)
 {
     if ((Socket_fd = socket(AF_INET,SOCK_STREAM,0))==-1)
@@ -35,13 +37,20 @@ int Socket_Init(void)
         close(Socket_fd);
         return -1;
     }
+
     char p[20];
     sprintf(p,"Gateway:%s",GATEWAY_ID);
     pthread_mutex_lock(&mutex_socket);
+    Connectflag = Connected;
     if(write(Socket_fd,p,strlen(p))<=0)
     {
 	    perror("write");
 	    close(Socket_fd);
+	    Connectflag = Disconnected;
+    }
+    else
+    {
+	    Connectflag = Connected;
     }
     pthread_mutex_unlock(&mutex_socket);
 }
