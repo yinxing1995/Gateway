@@ -52,16 +52,6 @@ void *tcp_client(void)
 	//FD_SET(Socket_fd,&rfds);
 	while(1)
 	{
-		/*
-		if ((iret=recv(Socket_fd,Datagram,sizeof(Datagram),0))<=0)
-		{
-			printf("socket error\r\n");
-			if (connect(Socket_fd, (struct sockaddr *)&servaddr,sizeof(servaddr)) != 0)  // 向服务端发起连接清求。
-				perror("connect");
-		}
-		else
-			printf("recv = %s\r\n",Datagram);
-		*/
 		FD_ZERO(&rfds);
 		FD_SET(Socket_fd,&rfds);
 		iret = select(Socket_fd+1,&rfds,NULL,NULL,&timeout);
