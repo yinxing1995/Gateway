@@ -22,7 +22,7 @@ enum FrameType
 
 enum DataType
 {
-    _INT = 0x00,
+    _INT32 = 0x00,
     _FLOAT = 0x01,
 };
 

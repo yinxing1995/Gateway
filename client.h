@@ -3,6 +3,7 @@
 
 #include <arpa/inet.h>
 #include <pthread.h>
+#include "ringbuffer.h"
 
 #define SERVADDR "130.61.250.117"
 #define PORT 17480
@@ -10,7 +11,8 @@
 int Connectflag;
 int Socket_fd;
 struct sockaddr_in servaddr;
-char Datagram[200];
+char Datagram[500];
+Ringbuf *NET_BUF;
 
 enum
 {

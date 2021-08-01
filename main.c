@@ -12,12 +12,14 @@
 #include "dataprocessing.h"
 #include "client.h"
 
+
+
 void *usart_processing(void)
 {
 	char p;
 	while(1)
 	{
-		if(BufferSeek(&p,1))
+		if(BufferSeek(USART_BUF,&p,1))
 		usleep(1000);
 		StateMachine();
 	}
@@ -34,7 +36,7 @@ void *usart_recv(void)//use select() to save resources
 		if(num > 0)
 		{
 			//printf("p = %#04x\r\n",p);
-			BufferWrite(&p,1);
+			BufferWrite(USART_BUF,&p,1);
 		}
 		num = 0;
 	}
@@ -89,7 +91,8 @@ int main(void)
 {
 	Serial_init();
 	Serial_Set();	
-	BufferInit(Text,sizeof(Text));
+	USART_BUF = BufferInit(Text,sizeof(Text));
+	NET_BUF = BufferInit(Datagram,sizeof(Datagram));
 	fcntl(Serial_fd,F_SETFL,0);
 	pthread_mutex_init(&mutex_socket,NULL);
 	Socket_Init();

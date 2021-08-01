@@ -68,7 +68,7 @@ static void DataPush(char *buf, int len)
     Current->DataLength = *buf++;
     switch(Current->DataType)
     {
-        case _INT:
+        case _INT32:
             Current->Data = malloc(Current->DataLength*sizeof(int));
             break;
         case _FLOAT:
@@ -87,27 +87,27 @@ void StateMachine()
     switch(State)
     {
         case Init:
-            if(BufferSeek(frameflag,sizeof(frameflag) - 1))
+            if(BufferSeek(USART_BUF,frameflag,sizeof(frameflag) - 1))
                 break;//buffer not ready
 	        frameflag[sizeof(frameflag)] = '\0';
             if(strcmp(FRAMEFLAG,frameflag))
             {
 	        printf("flag = %s\r\n",frameflag);
-                BufferRead(frameflag,1);//readpointer + 1
+                BufferRead(USART_BUF,frameflag,1);//readpointer + 1
                 break;
             }
-            BufferRead(frameflag,sizeof(frameflag) - 1);
+            BufferRead(USART_BUF,frameflag,sizeof(frameflag) - 1);
             memset(frameflag,0,sizeof(frameflag));//frame flag found
             State = GetLen;
             break;
         case GetLen:
-            if(BufferRead(&FrameLen,sizeof(FrameLen)))
+            if(BufferRead(USART_BUF,&FrameLen,sizeof(FrameLen)))
                 break;//buffer not ready
             State = FramePick;
             fbuf = (uint8_t *)malloc(FrameLen - sizeof(FrameLen));
             break;//len got
         case FramePick:
-            if(BufferRead(fbuf,FrameLen - sizeof(FrameLen)))
+            if(BufferRead(USART_BUF,fbuf,FrameLen - sizeof(FrameLen)))
                 break;//buffer not ready
             int i = 0;
 	    uint8_t sum = 0;
