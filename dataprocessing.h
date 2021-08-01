@@ -41,5 +41,6 @@ typedef struct ClusterStructure
 }ClusterArray;
 
 void StateMachine();
+void CommandPush();
 
 #endif

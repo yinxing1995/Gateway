@@ -89,7 +89,7 @@ void StateMachine()
         case Init:
             if(BufferSeek(USART_BUF,frameflag,sizeof(frameflag) - 1))
                 break;//buffer not ready
-	        frameflag[sizeof(frameflag)] = '\0';
+	    frameflag[sizeof(frameflag)] = '\0';
             if(strcmp(FRAMEFLAG,frameflag))
             {
 	        printf("flag = %s\r\n",frameflag);
@@ -110,7 +110,7 @@ void StateMachine()
             if(BufferRead(USART_BUF,fbuf,FrameLen - sizeof(FrameLen)))
                 break;//buffer not ready
             int i = 0;
-	    uint8_t sum = 0;
+	        uint8_t sum = 0;
             for(i=0;i<(FrameLen - sizeof(FrameLen) - 1);i++)
             {
                 sum += fbuf[i];
@@ -133,14 +133,14 @@ void StateMachine()
             }
         case DataUpdate:
             if(*fbuf == REPORT)
-	    {
-		DataUpload(fbuf,FrameLen);
-		FrameLen = 0;
-		fbuf++;
+	        {
+		        DataUpload(fbuf,FrameLen);
+		        FrameLen = 0;
+		        fbuf++;
                 DataPush(fbuf,FrameLen);
-		free(--fbuf);
-	    }
-	    else
+		        free(--fbuf);
+	        }
+	        else
                 free(fbuf);
             fbuf = NULL;
 	        State = Init;
@@ -151,3 +151,44 @@ void StateMachine()
     }
 }
 
+static void SendCommand(char * message,uint16_t len)
+{
+    uint16_t i = 0;
+    printf("Send :");
+    for(i=0;i<len;i++)
+    {
+        printf(" %02x ",message[i]);
+    }
+    printf("\r\n");
+}
+
+void CommandPush()
+{
+    char flag[sizeof(FRAMEFLAG)];
+    uint16_t len,i;
+    char *Message;
+    while(1)
+    {
+        if(BufferSeek(NET_BUF,flag,sizeof(FRAMEFLAG) - 1))
+            return;//buffer not ready
+	flag[sizeof(flag)-1] = '\0';
+	for(i=0;i<(sizeof(FRAMEFLAG)-1);i++)
+	{
+		printf("flag[i]=%02x\r\n",flag[i]);
+	}
+        if(strcmp(FRAMEFLAG,flag))
+        {
+            BufferRead(NET_BUF,flag,1);//readpointer + 1
+            continue;
+        }
+        else
+            break;
+    }
+    printf("Message!!\r\n");
+    BufferRead(NET_BUF,flag,sizeof(flag) - 1);
+    BufferSeek(NET_BUF,&len,sizeof(len));
+    Message = (char *)malloc(len);
+    BufferRead(NET_BUF,Message,len);
+    SendCommand(Message,len);
+    free(Message);
+}

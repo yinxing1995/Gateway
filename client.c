@@ -5,6 +5,7 @@
 #include <netdb.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <termios.h>
 #include "client.h"
 
 #define GATEWAY_ID "001"
@@ -37,7 +38,11 @@ int Socket_Init(void)
         close(Socket_fd);
         return -1;
     }
-
+	struct termios options;
+    options.c_lflag &= ~(ICANON | ISIG);
+    options.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+    tcflush(Socket_fd,TCIFLUSH);
+    tcsetattr(Socket_fd,TCSANOW,&options);
     char p[20];
     sprintf(p,"Gateway:%s",GATEWAY_ID);
     pthread_mutex_lock(&mutex_socket);
