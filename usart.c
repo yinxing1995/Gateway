@@ -36,7 +36,7 @@ void Serial_Set(void)
 	cfsetispeed(&options,B19200);
 	cfsetospeed(&options,B19200);
 	options.c_lflag &= ~(ICANON | ISIG);
-	options.c_iflag &= ~(ICRNL | IGNCR);
+	options.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
 	tcflush(Serial_fd,TCIFLUSH);
 	tcsetattr(Serial_fd,TCSANOW,&options);
 }
