@@ -89,7 +89,7 @@ void StateMachine()
         case Init:
             if(BufferSeek(USART_BUF,frameflag,sizeof(frameflag) - 1))
                 break;//buffer not ready
-	    frameflag[sizeof(frameflag)] = '\0';
+	        frameflag[sizeof(frameflag)] = '\0';
             if(strcmp(FRAMEFLAG,frameflag))
             {
 	        printf("flag = %s\r\n",frameflag);
@@ -160,6 +160,9 @@ static void SendCommand(char * message,uint16_t len)
         printf(" %02x ",message[i]);
     }
     printf("\r\n");
+    i = write(Serial_fd,"Frame",strlen("Frame"));
+    printf("I = %d\r\n",i);
+    write(Serial_fd,message,len);
 }
 
 void CommandPush()

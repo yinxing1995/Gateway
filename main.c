@@ -19,9 +19,11 @@ void *usart_processing(void)
 	char p;
 	while(1)
 	{
+		
 		if(BufferSeek(USART_BUF,&p,1))
 		usleep(1000);
 		StateMachine();
+		
 	}
 	printf("Error\r\n");
 }
