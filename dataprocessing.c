@@ -160,7 +160,7 @@ static void SendCommand(char * message,uint16_t len)
         printf(" %02x ",message[i]);
     }
     printf("\r\n");
-    i = write(Serial_fd,"Frame",strlen("Frame"));
+    i = write(Serial_fd,FRAMEFLAG,strlen(FRAMEFLAG));
     printf("I = %d\r\n",i);
     write(Serial_fd,message,len);
 }
