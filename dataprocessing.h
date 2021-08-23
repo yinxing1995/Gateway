@@ -20,6 +20,16 @@ enum FrameType
     NETSTATUS = 0x02,
 };
 
+enum Cluster
+{
+    Temperature = 0x00,
+    TemperatureArray = 0x01,
+    LightStrength = 0x02,
+    InfraredStrength = 0x03,
+    Humidity = 0x04,
+    OnOff = 0x05,
+};
+
 enum DataType
 {
     _INT32 = 0x00,

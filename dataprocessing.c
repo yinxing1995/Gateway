@@ -7,6 +7,7 @@
 #include "ringbuffer.h"
 #include "client.h"
 #include "usart.h"
+#include "dsp.h"
 
 #define FRAMEFLAG "Frame"
 
@@ -55,6 +56,7 @@ static void DataPush(char *buf, int len)
                 Current->next = (ClusterArray *)malloc(sizeof(ClusterArray));
                 Current = Current->next;
                 Current->next = NULL;
+                Current->Data = NULL;
                 break;
             }
             Current = Current->next;
@@ -69,9 +71,11 @@ static void DataPush(char *buf, int len)
     switch(Current->DataType)
     {
         case _INT32:
+        if(!Current->Data)
             Current->Data = malloc(Current->DataLength*sizeof(int));
             break;
         case _FLOAT:
+        if(!Current->Data)
             Current->Data = malloc(Current->DataLength*sizeof(float));
             break;
         default:
@@ -80,6 +84,18 @@ static void DataPush(char *buf, int len)
     }
     memcpy(Current->Data,(void *)buf,Current->DataLength*sizeof(float));
     //Current->Timer = NULL;
+    //temporary!!!
+    printf("Node = %d",Current->NodeID);
+    if(Current->NodeID == 2 && Current->ClusterID == Temperature)
+        {
+	    printf("tempadded!!\r\n");
+	    addtemp(*(float *)Current->Data);
+	}
+    if(Current->NodeID == 2 && Current->ClusterID == Humidity)
+    {
+	    printf("humiadded!!\r\n");
+	    addhumi(*(float *)Current->Data);
+    }
 }
 
 void StateMachine()
