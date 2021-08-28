@@ -67,10 +67,10 @@ void windowprocessing()
        for(j=i;j<WINDOW_SIZE;j++)
        {
            if((temp[WINDOW_SIZE-1-i]-temp[WINDOW_SIZE-1-j])<-0.01)temp_fa = -1;
-           else if((temp[WINDOW_SIZE-1-i]-temp[WINDOW_SIZE-1-j])>=-0.01 || (temp[WINDOW_SIZE-1-i]-temp[WINDOW_SIZE-1-j])<=0.01)temp_fa = 0;
+           else if((temp[WINDOW_SIZE-1-i]-temp[WINDOW_SIZE-1-j])>=-0.01 && (temp[WINDOW_SIZE-1-i]-temp[WINDOW_SIZE-1-j])<=0.01)temp_fa = 0;
            else temp_fa = 1;
            if(humi[WINDOW_SIZE-1-i]-humi[WINDOW_SIZE-1-j]<-0.01)humi_fa = -1;
-           else if((humi[WINDOW_SIZE-1-i]-humi[WINDOW_SIZE-1-j])>=-0.01 || (humi[WINDOW_SIZE-1-i]-humi[WINDOW_SIZE-1-j])<=0.01)humi_fa = 0;
+           else if((humi[WINDOW_SIZE-1-i]-humi[WINDOW_SIZE-1-j])>=-0.01 && (humi[WINDOW_SIZE-1-i]-humi[WINDOW_SIZE-1-j])<=0.01)humi_fa = 0;
            else humi_fa = 1;
            sum += temp_fa * humi_fa;
        }

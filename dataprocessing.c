@@ -85,15 +85,15 @@ static void DataPush(char *buf, int len)
     memcpy(Current->Data,(void *)buf,Current->DataLength*sizeof(float));
     //Current->Timer = NULL;
     //temporary!!!
-    printf("Node = %d",Current->NodeID);
+    //printf("Node = %d",Current->NodeID);
     if(Current->NodeID == 2 && Current->ClusterID == Temperature)
-        {
-	    printf("tempadded!!\r\n");
+    {
+	    printf("tempadded!!, temp = %f\r\n",*(float *)Current->Data);
 	    addtemp(*(float *)Current->Data);
-	}
+    }
     if(Current->NodeID == 2 && Current->ClusterID == Humidity)
     {
-	    printf("humiadded!!\r\n");
+	    printf("humiadded!!, humi = %f\r\n",*(float *)Current->Data);
 	    addhumi(*(float *)Current->Data);
     }
 }
