@@ -11,6 +11,9 @@ float temp_node2[15] = {0};
 float humi_node2[15] = {0};
 static int t = 0;//test
 
+int alarm_AMG8833 = 0;
+int alarm_DHT22 = 0;
+
 void addtemp(float value)
 {
     temppointer++;
@@ -79,4 +82,24 @@ void windowprocessing()
    float window = WINDOW_SIZE;
    kendall = (2.0f/(window*(window-1.0f)))*(float)sum;
    printf("Sum = %d ,Kendall = %f\r\n",sum,kendall);
+   if(kendall <= -0.4 || temp[WINDOW_SIZE] >= 80)
+      alarm_DHT22 = 1;
+   else
+      alarm_DHT22 = 0;
+}
+
+uint8_t addinfra(float *array,uint8_t len)
+{
+    float *temparray = (float *)malloc(sizeof(float)*len);
+    int i = len;
+    temparray = array;
+    for(i=0;i<len;i++)
+    {
+        if(temparray[i] >= 218.0)
+            alarm_AMG8833 = 1;
+    }
+    uint8_t level = alarm_AMG8833 + alarm_DHT22;
+    alarm_AMG8833 = 0;
+    alarm_DHT22 = 0;
+    return level;
 }

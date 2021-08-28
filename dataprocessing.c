@@ -96,6 +96,32 @@ static void DataPush(char *buf, int len)
 	    printf("humiadded!!, humi = %f\r\n",*(float *)Current->Data);
 	    addhumi(*(float *)Current->Data);
     }
+    if(Current->ClusterID == TemperatureArray)
+    {
+        printf("Temperature Array = %f\r\n",*(float *)Current->Data);
+        uint8_t level = addinfra((float *)Current->Data,Current->DataLength);
+	printf("ALARM_LEVEL = %d\r\n",level);
+        if(level > 0)
+        {
+            char *p = (char *)malloc(len+sizeof(len)+strlen(FRAMEFLAG));
+            //
+            char *temp = p;
+            uint16_t len = 4;
+            uint8_t type = ALARM;
+	        memcpy(temp,FRAMEFLAG,strlen(FRAMEFLAG));
+	        temp += strlen(FRAMEFLAG);
+	        memcpy(temp,(void *)&len,sizeof(len));
+	        temp += sizeof(len);
+            memcpy(temp,(void *)&type,sizeof(type));
+            temp += sizeof(type);
+            memcpy(temp,(void *)&level,sizeof(type));
+            pthread_mutex_lock(&mutex_socket);
+            if(Connectflag == Connected)
+		        write(Socket_fd,p,strlen(FRAMEFLAG)+len);
+	        pthread_mutex_unlock(&mutex_socket);
+            free(p);
+        }
+    }
 }
 
 void StateMachine()

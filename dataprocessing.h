@@ -18,6 +18,7 @@ enum FrameType
     REPORT = 0x00,
     CHECK = 0x01,
     NETSTATUS = 0x02,
+    ALARM = 0x03
 };
 
 enum Cluster
