@@ -18,6 +18,9 @@ static uint16_t FrameLen = 0;
 static ClusterArray *Head = NULL;
 static char *fbuf = NULL;
 
+uint8_t last_level = 0;
+
+
 static void DataUpload(char *buf, uint16_t len)
 {
 	char *p = (char *)malloc(len+sizeof(len)+strlen(FRAMEFLAG));
@@ -103,6 +106,10 @@ static void DataPush(char *buf, int len)
 	printf("ALARM_LEVEL = %d\r\n",level);
         if(level > 0)
         {
+            if(alarm_locker == LOCKED && level == last_level)
+            {
+                return;
+            }
             char *p = (char *)malloc(len+sizeof(len)+strlen(FRAMEFLAG));
             //
             char *temp = p;
@@ -119,7 +126,11 @@ static void DataPush(char *buf, int len)
             if(Connectflag == Connected)
 		        write(Socket_fd,p,strlen(FRAMEFLAG)+len);
 	        pthread_mutex_unlock(&mutex_socket);
+            alarm_locker = LOCKED;
+            alarm(60);
             free(p);
+            //
+            last_level = level;
         }
     }
 }

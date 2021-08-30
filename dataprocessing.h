@@ -5,6 +5,11 @@
 
 //typedef struct timer_list timer; 
 
+#define LOCKED 1
+#define UNLOCKED 0
+
+uint8_t alarm_locker;
+
 enum states
 {
     Init = 0x00,

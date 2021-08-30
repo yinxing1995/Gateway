@@ -11,12 +11,24 @@
 #include "ringbuffer.h"
 #include "dataprocessing.h"
 #include "client.h"
+#include <signal.h>
 
-
+void alarmlocker(int sig)
+{
+    if(SIGALRM == sig)
+    {
+        printf("alarmlock!!\r\n");
+		alarm_locker = UNLOCKED;
+    }   
+    return ;
+}
 
 void *usart_processing(void)
 {
 	char p;
+	signal(SIGALRM, alarmlocker);
+	alarm_locker = UNLOCKED;
+
 	while(1)
 	{
 		
