@@ -64,6 +64,7 @@ void windowprocessing()
     */
    int i=0,j=0;
    int sum = 0;
+   int sum_temp = 0;
    int temp_fa,humi_fa = 0;
    for(i=0;i<WINDOW_SIZE;i++)
    {
@@ -76,13 +77,15 @@ void windowprocessing()
            else if((humi[WINDOW_SIZE-1-i]-humi[WINDOW_SIZE-1-j])>=-0.01 && (humi[WINDOW_SIZE-1-i]-humi[WINDOW_SIZE-1-j])<=0.01)humi_fa = 0;
            else humi_fa = 1;
            sum += temp_fa * humi_fa;
+           sum_temp +=temp_fa; 
        }
    }
-   float kendall = 0;
+   float kendall = 0,kendall_temp = 0;
    float window = WINDOW_SIZE;
    kendall = (2.0f/(window*(window-1.0f)))*(float)sum;
+   kendall_temp = (2.0f/(window*(window-1.0f)))*(float)sum_temp;
    printf("Sum = %d ,Kendall = %f\r\n",sum,kendall);
-   if(kendall <= -0.4 || temp[WINDOW_SIZE] >= 80)
+   if((kendall <= -0.4 && kendall_temp >= 0.4) || temp[WINDOW_SIZE] >= 80)
       alarm_DHT22 = 1;
    else
       alarm_DHT22 = 0;
